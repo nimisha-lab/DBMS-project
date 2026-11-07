@@ -1,0 +1,2 @@
+-- Expense 5 (Codeathon Prizes): change approver to core S035 (membership_id 35, developers club organizing Codeathon via cs club relationship)
+UPDATE expense SET approved_by = 35 WHERE expense_id = 5;

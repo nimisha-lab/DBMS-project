@@ -1,0 +1,1 @@
+SELECT status, count(*) FROM event_registration WHERE event_id = 15 GROUP BY status;

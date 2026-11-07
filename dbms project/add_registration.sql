@@ -1,0 +1,1 @@
+INSERT INTO event_registration (event_id, roll_number, status) VALUES (15, 'S050', 'registered');

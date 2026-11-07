@@ -1,0 +1,1 @@
+UPDATE event_registration SET status = 'cancelled' WHERE event_id = 15 AND status = 'attended' AND roll_number = 'S029';
