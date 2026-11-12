@@ -117,3 +117,25 @@ CREATE CONSTRAINT TRIGGER trg_event_coordinator
 AFTER INSERT OR UPDATE ON event
 DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW EXECUTE FUNCTION fn_check_event_coordinator();
+
+
+-- trigger to disable creation of events with past dates
+CREATE OR REPLACE FUNCTION prevent_past_event()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.event_date < CURRENT_DATE THEN
+        RAISE EXCEPTION
+            'Cannot create or reschedule event: event date % is in the past',
+            NEW.event_date;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_prevent_past_event ON event;
+
+CREATE TRIGGER trg_prevent_past_event
+BEFORE INSERT OR UPDATE OF event_date
+ON event
+FOR EACH ROW
+EXECUTE FUNCTION prevent_past_event();

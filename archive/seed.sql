@@ -13,8 +13,12 @@ RESTARt IDENTITY CASCADE;
 
 -- =====================================================
 -- 1. Temporarily disable registration date trigger
--- =====================================================
-ALTER TABLE event_registration DISABLE TRIGGER trg_registration_date;
+-- ==============================================
+ALTER TABLE event
+DISABLE TRIGGER trg_prevent_past_event;
+
+ALTER TABLE event_registration
+DISABLE TRIGGER trg_registration_date;
 
 -- =====================================================
 -- 2. Seed: Students (50 students, S001-S050, each roll number unique)
@@ -463,6 +467,8 @@ INSERT INTO announcement (club_id, team_id, event_id, title, body, posted_at) VA
 -- =====================================================
 ALTER TABLE event_registration ENABLE TRIGGER trg_registration_date;
 
+ALTER TABLE event
+ENABLE TRIGGER trg_prevent_past_event;
 -- =====================================================
 -- 12. Commit
 -- =====================================================

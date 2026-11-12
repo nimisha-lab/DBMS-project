@@ -8,24 +8,10 @@
 -- ---------------------------------------------------------------------
 -- 0. DROP (reverse dependency order)
 -- ---------------------------------------------------------------------
-DROP TABLE IF EXISTS expense            CASCADE;
-DROP TABLE IF EXISTS budget             CASCADE;
-DROP TABLE IF EXISTS event_registration CASCADE;
-DROP TABLE IF EXISTS event_club         CASCADE;
-DROP TABLE IF EXISTS event              CASCADE;
-DROP TABLE IF EXISTS membership         CASCADE;
-DROP TABLE IF EXISTS team               CASCADE;
-DROP TABLE IF EXISTS club               CASCADE;
-DROP TABLE IF EXISTS student_email      CASCADE;
-DROP TABLE IF EXISTS announcement          CASCADE;
-DROP TABLE IF EXISTS membership_history    CASCADE;
-DROP TABLE IF EXISTS expense_audit         CASCADE;
-DROP TABLE IF EXISTS student            CASCADE;
 
 
--- creating tables
 -- 1. student
-CREATE TABLE student (
+CREATE TABLE  IF NOT EXISTS student (
     roll_number   VARCHAR(12) PRIMARY KEY,
     name          VARCHAR(50) NOT NULL,
     phone_number  VARCHAR(10),
@@ -35,7 +21,7 @@ CREATE TABLE student (
 );
 
 -- 2 student_email  (multivalued attribute of student)
-CREATE TABLE student_email (
+CREATE TABLE  IF NOT EXISTS student_email (
     roll_number  VARCHAR(12) NOT NULL
                  REFERENCES student(roll_number) ON DELETE CASCADE,   
     email        VARCHAR(50) NOT NULL,
@@ -45,7 +31,7 @@ CREATE TABLE student_email (
 );
 
 -- 3 club
-CREATE TABLE club (
+CREATE TABLE IF NOT EXISTS club (
     club_id  SERIAL PRIMARY KEY,                                       
     name     VARCHAR(50) NOT NULL UNIQUE,
     type     VARCHAR(25) NOT NULL                                      
@@ -53,7 +39,7 @@ CREATE TABLE club (
 );
 
 -- 4 team
-CREATE TABLE team (
+CREATE TABLE IF NOT EXISTS team (
     team_id  SERIAL PRIMARY KEY,                                      
     club_id  INT NOT NULL REFERENCES club(club_id) ON DELETE CASCADE,  
     name     VARCHAR(50) NOT NULL,                                     
@@ -62,7 +48,7 @@ CREATE TABLE team (
 );
 
 -- 5 membership
-CREATE TABLE membership (
+CREATE TABLE  IF NOT EXISTS membership (
     membership_id  SERIAL PRIMARY KEY,
     roll_number    VARCHAR(12) NOT NULL
                    REFERENCES student(roll_number) ON DELETE CASCADE,
@@ -79,7 +65,7 @@ CREATE TABLE membership (
 );
 
 -- 6 event
-CREATE TABLE event (
+CREATE TABLE IF NOT EXISTS event (
     event_id        SERIAL PRIMARY KEY,                                
     name            VARCHAR(50) NOT NULL,                              
     event_date      DATE NOT NULL,                                     
@@ -90,14 +76,14 @@ CREATE TABLE event (
 );
 
 -- 7 event_club  (clubs organising an event: many-to-many)
-CREATE TABLE event_club (
+CREATE TABLE IF NOT EXISTS event_club (
     event_id  INT REFERENCES event(event_id) ON DELETE CASCADE,       
     club_id   INT REFERENCES club(club_id)   ON DELETE CASCADE,        
     PRIMARY KEY (event_id, club_id)
 );
 
 -- 8 event_registration
-CREATE TABLE event_registration (
+CREATE TABLE IF NOT EXISTS event_registration (
     event_id       INT NOT NULL REFERENCES event(event_id) ON DELETE CASCADE,         
     roll_number    VARCHAR(12) NOT NULL
                    REFERENCES student(roll_number) ON DELETE CASCADE,                 
@@ -108,7 +94,7 @@ CREATE TABLE event_registration (
 );
 
 -- 9 budget  (weak entity: one budget per event)
-CREATE TABLE budget (
+CREATE TABLE IF NOT EXISTS budget (
     event_id   INT PRIMARY KEY
                REFERENCES event(event_id) ON DELETE CASCADE,
     estimated  NUMERIC(10,2) NOT NULL DEFAULT 0,
@@ -118,7 +104,7 @@ CREATE TABLE budget (
 );
 
 -- 10 expense   
-CREATE TABLE expense (
+CREATE TABLE IF NOT EXISTS expense (
     expense_id   SERIAL PRIMARY KEY,
     event_id     INT NOT NULL REFERENCES budget(event_id) ON DELETE CASCADE,
     description  VARCHAR(200) NOT NULL,
@@ -128,7 +114,7 @@ CREATE TABLE expense (
     CONSTRAINT chk_expense_amount CHECK (amount > 0)
 );
 -- 11 announcement
-CREATE TABLE announcement (
+CREATE TABLE IF NOT EXISTS announcement (
     announcement_id SERIAL PRIMARY KEY,
     club_id         INT NOT NULL REFERENCES club(club_id) ON DELETE CASCADE,
     team_id         INT NULL,
@@ -140,7 +126,7 @@ CREATE TABLE announcement (
 );
 
 -- 12 membership_history (no FKs)
-CREATE TABLE membership_history (
+CREATE TABLE IF NOT EXISTS membership_history (
     history_id SERIAL PRIMARY KEY,
     roll_number  VARCHAR(12) NOT NULL,
     club_id      INT      NOT NULL,
@@ -149,7 +135,7 @@ CREATE TABLE membership_history (
 );
 
 -- 13 expense_audit (no FKs)
-CREATE TABLE expense_audit (
+CREATE TABLE IF NOT EXISTS expense_audit (
     audit_id      SERIAL PRIMARY KEY,
     expense_id    INT      NOT NULL,
     operation     VARCHAR(6) NOT NULL CHECK (operation IN ('INSERT','UPDATE','DELETE')),
@@ -161,9 +147,9 @@ CREATE TABLE expense_audit (
 -- ---------------------------------------------------------------------
 -- 2. INDEXES
 -- ---------------------------------------------------------------------
-CREATE INDEX idx_membership_club ON membership(club_id);
-CREATE INDEX idx_event_date      ON event(event_date);
-CREATE INDEX idx_expense_event   ON expense(event_id);
+CREATE INDEX IF NOT EXISTS idx_membership_club ON membership(club_id);
+CREATE INDEX IF NOT EXISTS idx_event_date      ON event(event_date);
+CREATE INDEX IF NOT EXISTS idx_expense_event   ON expense(event_id);
 
 
 -- ---------------------------------------------------------------------

@@ -27,14 +27,12 @@ SELECT 'Count of expenses with invalid approver position: 0 (trigger ensures onl
 
 -- Coordinators outside organizing clubs
 SELECT '=== COORDINATOR OUTSIDE ORGANISING CLUB ===' AS violation_type;
-SELECT e.name AS event_name, 
+SELECT e.name AS event_name,
        COUNT(*) AS coordinator_violations
 FROM event e
-LEFT JOIN (
-    SELECT event_id, coordinator_id
-    FROM event_registration
-    WHERE coordinator_id IS NOT NULL
-) er ON e.event_id = er.event_id
-LEFT JOIN membership m ON er.coordinator_id = m.membership_id
-GROUP BY e.name
-HAVING COUNT(*) > 0 OR COUNT(m.membership_id) = 0 AND COUNT(er.coordinator_id) > 0;
+JOIN membership m ON e.coordinator_id = m.membership_id
+LEFT JOIN event_club ec ON ec.event_id = e.event_id 
+                       AND ec.club_id = m.club_id
+WHERE e.coordinator_id IS NOT NULL
+  AND ec.club_id IS NULL
+GROUP BY e.name;
