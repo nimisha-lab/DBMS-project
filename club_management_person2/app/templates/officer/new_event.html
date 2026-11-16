@@ -1,0 +1,132 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Create event · {{ club.name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto px-4 py-8">
+
+  <a
+    class="text-indigo-700"
+    href="{{ url_for('officer.dashboard', club_id=club.club_id) }}"
+  >
+    ← Dashboard
+  </a>
+
+  <div class="bg-white border rounded-2xl p-6 mt-4">
+
+    <h1 class="text-2xl font-bold">
+      Create an event for {{ club.name }}
+    </h1>
+
+    <p class="text-slate-500 mt-1 mb-6">
+      The event will be linked to this club and
+      a budget record will be created.
+    </p>
+
+    <form method="post" class="space-y-4">
+
+      <!-- Event name -->
+      <div>
+        <label class="block text-sm font-medium mb-1">
+          Event name *
+        </label>
+
+        <input
+          type="text"
+          name="name"
+          required
+          maxlength="50"
+          class="w-full border rounded-lg p-3"
+          value="{{ request.form.get('name','') }}"
+        >
+      </div>
+
+      <!-- Event date -->
+      <div>
+        <label class="block text-sm font-medium mb-1">
+          Event date *
+        </label>
+
+        <input
+          type="date"
+          name="event_date"
+          required
+          min="{{ today }}"
+          class="w-full border rounded-lg p-3"
+          value="{{ request.form.get('event_date','') }}"
+        >
+      </div>
+
+      <!-- Venue -->
+      <div>
+        <label class="block text-sm font-medium mb-1">
+          Venue
+        </label>
+
+        <input
+          type="text"
+          name="venue"
+          maxlength="50"
+          class="w-full border rounded-lg p-3"
+          value="{{ request.form.get('venue','') }}"
+        >
+      </div>
+
+      <!-- Capacity -->
+      <div>
+        <label class="block text-sm font-medium mb-1">
+          Capacity (leave blank for unlimited)
+        </label>
+
+        <input
+          type="number"
+          name="capacity"
+          min="1"
+          step="1"
+          class="w-full border rounded-lg p-3"
+          value="{{ request.form.get('capacity','') }}"
+        >
+      </div>
+
+      <!-- Estimated budget -->
+      <div>
+        <label class="block text-sm font-medium mb-1">
+          Estimated budget (₹)
+        </label>
+
+        <input
+          type="number"
+          name="estimated"
+          step="0.01"
+          min="0"
+          required
+          class="w-full border rounded-lg p-3"
+          value="{{ request.form.get('estimated','0') }}"
+        >
+
+        <p class="text-sm text-slate-500 mt-2">
+          You can enter the estimated budget for this event.
+          The allotted budget will initially be ₹0.
+          Budget allocation is handled by the administrator.
+        </p>
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="rounded-lg bg-indigo-600 text-white px-5 py-3 font-medium"
+      >
+        Create event
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+{% endblock %}

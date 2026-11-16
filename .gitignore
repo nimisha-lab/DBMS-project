@@ -1,0 +1,22 @@
+# Database credentials and environment files
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+venv/
+.venv/
+venv_old/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporary files
+*.log
+.pytest_cache/
+
+# Project ZIP backups
+club_management_person2.zip
+club_management_person3.zip

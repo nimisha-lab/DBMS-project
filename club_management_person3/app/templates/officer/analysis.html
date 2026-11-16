@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ club.name }} analysis{% endblock %}
+{% block content %}
+<div class="mb-6 flex flex-wrap items-center justify-between gap-3"><div><p class="text-sm text-slate-500">Club lead view</p><h1 class="text-2xl font-bold">{{ club.name }} — Club Analysis</h1></div><a class="text-indigo-700 underline" href="{{ url_for('officer.dashboard', club_id=club.club_id) }}">Back to dashboard</a></div>
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+{% for label, value in [('Events organized', stats.events_organized), ('Events with participants', stats.events_with_participants), ('Total event registrations', stats.total_registrations), ('Unique participating students', stats.unique_participants), ('Upcoming events', stats.upcoming_events), ('Club members', stats.total_members), ('Teams', stats.total_teams)] %}<div class="rounded-lg border bg-white p-5"><p class="text-sm text-slate-500">{{ label }}</p><p class="mt-2 text-3xl font-bold">{{ value }}</p></div>{% endfor %}
+</div>
+<p class="mt-4 text-xs text-slate-500">Counts are calculated only from events linked to this club. A registration is counted once per student-event pair.</p>
+{% endblock %}

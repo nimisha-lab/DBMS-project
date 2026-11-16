@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Expenses · {{ club.name }}{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6"><div><p class="text-sm text-slate-500">Officer workspace</p><h1 class="text-3xl font-bold">{{ club.name }} expenses</h1></div><a class="border rounded-lg px-4 py-2" href="{{ url_for('officer.dashboard', club_id=club.club_id) }}">Back to dashboard</a></div>
+  <section class="bg-white border rounded-xl p-5 mb-6"><h2 class="text-xl font-semibold mb-4">Pending approval</h2>
+  {% if data.pending %}<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b text-slate-500"><th class="py-2">Event</th><th>Description</th><th>Amount</th><th>Spent on</th><th>Action</th></tr></thead><tbody>
+  {% for x in data.pending %}<tr class="border-b last:border-0"><td class="py-3">{{ x.event_name }}</td><td>{{ x.description }}</td><td>{{ '%.2f'|format(x.amount) }}</td><td>{{ x.spent_on }}</td><td>{% if can_approve %}<form method="post" action="{{ url_for('officer.approve', club_id=club.club_id, expense_id=x.expense_id) }}"><button class="rounded-lg bg-emerald-600 text-white px-3 py-2 text-sm">Approve</button></form>{% else %}<span class="text-sm text-slate-500">Approver role required</span>{% endif %}</td></tr>{% endfor %}
+  </tbody></table></div>{% else %}<p class="text-slate-500">There are no pending expenses.</p>{% endif %}</section>
+  <section class="bg-white border rounded-xl p-5"><h2 class="text-xl font-semibold mb-4">Recently approved</h2>
+  {% if data.history %}<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b text-slate-500"><th class="py-2">Event</th><th>Description</th><th>Amount</th><th>Spent on</th><th>Approved by</th></tr></thead><tbody>{% for x in data.history %}<tr class="border-b last:border-0"><td class="py-3">{{ x.event_name }}</td><td>{{ x.description }}</td><td>{{ '%.2f'|format(x.amount) }}</td><td>{{ x.spent_on }}</td><td>{{ x.approver_roll or '—' }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-slate-500">No approved expenses yet.</p>{% endif %}</section>
+</div>
+{% endblock %}

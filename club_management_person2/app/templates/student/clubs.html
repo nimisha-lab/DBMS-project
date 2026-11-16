@@ -1,0 +1,163 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="mb-5 text-3xl font-bold">My clubs</h1>
+
+<h2 class="mb-3 text-xl font-semibold">
+  Current memberships
+</h2>
+
+<div class="mb-8 overflow-x-auto rounded border bg-white">
+
+  <table class="w-full text-left text-sm">
+
+    <thead class="bg-slate-100">
+      <tr>
+        <th class="p-3">Club</th>
+        <th class="p-3">Type</th>
+        <th class="p-3">Position</th>
+        <th class="p-3">Team</th>
+        <th class="p-3">Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {% for m in memberships %}
+
+      <tr class="border-t">
+
+        <td class="p-3">{{ m.club_name }}</td>
+
+        <td class="p-3">{{ m.type }}</td>
+
+        <td class="p-3">{{ m.position }}</td>
+
+        <td class="p-3">
+          {{ m.team_name or '—' }}
+        </td>
+
+        <td class="p-3">
+
+          {% if m.position == 'member' %}
+
+          <form
+            method="post"
+            action="{{ url_for('student.leave', club_id=m.club_id) }}"
+          >
+            <button
+              type="submit"
+              class="text-rose-700 hover:underline"
+            >
+              Leave
+            </button>
+          </form>
+
+          {% elif m.position in
+            ['president', 'secretary', 'treasurer', 'lead', 'core'] %}
+
+          <a
+            href="{{ url_for('officer.dashboard', club_id=m.club_id) }}"
+            class="inline-block rounded bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700"
+          >
+            Go to Dashboard
+          </a>
+
+          {% else %}
+
+          <span class="text-slate-500">
+            {{ m.position }}
+          </span>
+
+          {% endif %}
+
+        </td>
+
+      </tr>
+
+      {% else %}
+
+      <tr>
+        <td class="p-3" colspan="5">
+          No memberships yet.
+        </td>
+      </tr>
+
+      {% endfor %}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+
+<h2 class="mb-3 text-xl font-semibold">
+  Join a club
+</h2>
+
+<div class="grid gap-3 md:grid-cols-2">
+
+  {% for c in clubs %}
+
+  <form
+    method="post"
+    action="{{ url_for('student.join') }}"
+    class="rounded border bg-white p-4"
+  >
+
+    <input
+      type="hidden"
+      name="club_id"
+      value="{{ c.club_id }}"
+    >
+
+    <h3 class="font-semibold">
+      {{ c.name }}
+    </h3>
+
+    <p class="mb-3 text-xs">
+      {{ c.type }}
+    </p>
+
+    <label class="text-sm">
+      Team (optional)
+    </label>
+
+    <select
+      name="team_id"
+      class="my-2 w-full rounded border p-2"
+    >
+
+      <option value="">No team</option>
+
+      {% for t in teams_by_club.get(c.club_id, []) %}
+
+      <option value="{{ t.team_id }}">
+        {{ t.name }}
+      </option>
+
+      {% endfor %}
+
+    </select>
+
+    <button
+      type="submit"
+      class="rounded bg-indigo-700 px-3 py-2 text-white"
+    >
+      Join club
+    </button>
+
+  </form>
+
+  {% else %}
+
+  <p>No additional clubs available.</p>
+
+  {% endfor %}
+
+</div>
+
+{% endblock %}

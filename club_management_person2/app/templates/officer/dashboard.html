@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Officer dashboard · {{ club.name }}{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <div><p class="text-sm text-slate-500">Officer workspace</p><h1 class="text-3xl font-bold">{{ club.name }}</h1><p class="text-slate-600 capitalize">{{ club.type }}</p></div>
+    <div class="flex flex-wrap gap-2"><a class="rounded-lg bg-indigo-600 text-white px-4 py-2" href="{{ url_for('officer.new_event', club_id=club.club_id) }}">Create event</a><a class="rounded-lg border px-4 py-2" href="{{ url_for('officer.members', club_id=club.club_id) }}">Members</a><a class="rounded-lg border px-4 py-2" href="{{ url_for('officer.expenses', club_id=club.club_id) }}">Expenses</a></div>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+    {% for label, value in [('Members',stats.member_count),('Teams',stats.team_count),('Events',stats.event_count),('Upcoming events',stats.upcoming_event_count),('Pending expenses',stats.pending_expense_count)] %}
+    <div class="bg-white rounded-xl border p-5"><p class="text-sm text-slate-500">{{ label }}</p><p class="text-3xl font-semibold mt-1">{{ value }}</p></div>
+    {% endfor %}
+  </div>
+  <section class="bg-white border rounded-xl p-5">
+    <h2 class="text-xl font-semibold mb-4">Upcoming club events</h2>
+    {% if upcoming_events %}<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b text-slate-500"><th class="py-2">Event</th><th>Date</th><th>Venue</th><th>Capacity</th></tr></thead><tbody>{% for e in upcoming_events %}<tr class="border-b last:border-0"><td class="py-3 font-medium">{{ e.name }}</td><td>{{ e.event_date }}</td><td>{{ e.venue or '—' }}</td><td>{{ e.capacity or 'Unlimited' }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-slate-500">No upcoming events for this club.</p>{% endif %}
+  </section>
+  <section class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <a class="rounded-lg border bg-white p-4 font-semibold hover:bg-slate-50" href="{{ url_for('officer.members', club_id=club.club_id) }}">View members</a>
+    <a class="rounded-lg border bg-white p-4 font-semibold hover:bg-slate-50" href="{{ url_for('officer.new_event', club_id=club.club_id) }}">Create club event</a>
+    <a class="rounded-lg border bg-white p-4 font-semibold hover:bg-slate-50" href="{{ url_for('officer.budgets', club_id=club.club_id) }}">View budgets</a>
+    <a class="rounded-lg border bg-white p-4 font-semibold hover:bg-slate-50" href="{{ url_for('officer.analysis', club_id=club.club_id) }}">Club analysis</a>
+  </section>
+</div>
+{% endblock %}
