@@ -228,8 +228,5 @@ Additional SQL scenarios are stored under `tests/`. They are test fixtures/queri
 - The integrated Flask app has no implemented administrator dashboard or budget-allotment page, even though an admin identity and authorization helper exist.
 - The project currently has separate integrated and standalone officer-module copies; use the integrated one to run the application.
 - Some legacy setup files and archive content refer to earlier paths or database names; use the explicit setup sequence above rather than assuming every batch script is current.
-- This repository does not contain a production deployment configuration or a comprehensive automated end-to-end test suite.
+  
 
-## Contributing
-
-Contributions and improvements can be proposed through GitHub issues and pull requests. Keep credentials in local environment files, avoid committing generated caches or database dumps containing personal data, and test database migrations against a disposable database before applying them to shared data.
